@@ -21,3 +21,22 @@ random.seed(42)
 
 #4 Definir el número de datos simulados (DATASET)
 Filas=200
+
+ROLES=["administrador","empresario","profesor"]
+
+#5 Construir funcion generadora de datos 
+def generar_datos_usuarios(numero_registros=Filas):
+    
+    filas=[]
+    for i in range(numero_registros):
+            filas.append({
+                "id":str(uuid.uuid4()),
+                "nombre":fake.name(),
+                "correo":fake.email(),
+                "contraseña_hash":fake.sha256(),
+                "rol":random.choice(ROLES),
+                "activo":random.choice([True,False]),
+                "fecha_registro":fake.date_time_between(start_date="-2y", end_date="now")
+                
+             })
+            return filas
