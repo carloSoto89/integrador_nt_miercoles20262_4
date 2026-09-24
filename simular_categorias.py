@@ -61,13 +61,3 @@ def generar_datos_categorias(numero_registros=FILAS):
     return filas
 
 
-# Alias para compatibilidad
-generar_categorias = generar_datos_categorias
-
-
-if __name__ == "__main__":
-    datos = generar_datos_categorias()
-    print(f"Total de registros generados: {len(datos)}")
-    print("Ejemplo de las primeras 3 filas:")
-    for f in datos[:3]:
-        print(f)
