@@ -9,53 +9,32 @@ fake = Faker("es_CO")
 Faker.seed(42)
 random.seed(42)
 
-# -----------------------------------------------------------------------------
-# Constantes exigidas por Kaizen
-# -----------------------------------------------------------------------------
-CATEGORIAS = [
-    "Innovación y Transformación Digital",
-    "Optimización de Procesos",
-    "Sostenibilidad Ambiental",
-    "Seguridad y Salud en el Trabajo",
-    "Calidad y Reducción de Desperdicios",
-    "Experiencia del Cliente",
-    "Logística y Cadena de Suministro",
-    "Cultura Organizacional",
-    "Ciberseguridad y Datos",
-    "Eficiencia Energética",
-]
-
-# OJO: area_responsable NO está en el modelo de Backend II:
-# es una columna EXTRA solo para este ejercicio de análisis, para poder agrupar.
-AREAS = [
-    "Operaciones",
-    "Tecnología",
-    "Gestión Humana",
-    "Logística",
-    "Calidad",
-    "Servicio al Cliente",
-    "Finanzas",
-    "Seguridad Ocupacional",
-    "Sostenibilidad",
-]
-
 # 3. Definir el dato y su tipo a simular
-# Se generan 250 filas con estas columnas: id (texto (UUID)), nombre (texto), descripcion (texto), area_responsable (texto).
+# id (texto) (UUID)
+# nombre (texto)
+# correo (texto)
+# contrasena_hash (texto)
+# rol (texto)
+# activo (booleano)
+# fecha_registro (fecha y hora)
 
-# 4. Definir el número de datos simulados (DATASET)
+# 4. Definir el numero de datos simulados (DATASET)
 FILAS = 250
 
-# 5. Iterar y guardar
-filas = []
-for _ in range(FILAS):
-    filas.append({
-        "id": str(uuid.uuid4()),
-        "nombre": random.choice(CATEGORIAS),
-        "descripcion": fake.sentence(nb_words=8),
-        "area_responsable": random.choice(AREAS),
-    })
+ROLES = ["administrador", "empresario", "profesor"]
 
-print(f"Total de registros generados: {len(filas)}")
-print("Ejemplo de las primeras 3 filas:")
-for f in filas[:3]:
-    print(f)
+# 5. Construir funcion generadora de datos
+def generar_datos_usuarios(numero_registros=FILAS):
+    filas = []
+    for _ in range(numero_registros):
+        filas.append({
+            "id": str(uuid.uuid4()),
+            "nombre": fake.name(),
+            "correo": fake.email(),
+            "contrasena_hash": fake.sha256(),
+            "rol": random.choice(ROLES),
+            "activo": random.choice([True, False]),
+            "fecha_registro": fake.date_time_between(start_date="-2y", end_date="now"),
+        })
+    return filas
+
