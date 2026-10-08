@@ -53,28 +53,27 @@ def escribir_mal(texto):
 def ensuciar(datos_df):
     datos_df = datos_df.copy()
 
-    # 20% de `observacion` en nulos
+    # Se ensucia `observacion`: 20% en None (nulos).
     idx = generar_muestra(datos_df, 0.20)
     datos_df.loc[idx, "observacion"] = None
 
-    # 5% de `estado` con variantes mal escritas
+    # Se ensucia `estado`: variantes: 'inscrito', 'EN PROCESO', ' Finalizado '.
     idx = generar_muestra(datos_df, 0.05)
     datos_df.loc[idx, "estado"] = datos_df.loc[idx, "estado"].map(escribir_mal)
 
-    # 40% de `fecha_registro` en formato latino
+    # Se ensucia `fecha_registro`: dos formatos mezclados: "2026-03-15 14:30:00" y "15/03/2026 14:30".
     iso = datos_df["fecha_registro"].dt.strftime("%Y-%m-%d %H:%M:%S")
     latino = datos_df["fecha_registro"].dt.strftime("%d/%m/%Y %H:%M")
     datos_df["fecha_registro"] = iso
     idx = generar_muestra(datos_df, 0.40)
     datos_df.loc[idx, "fecha_registro"] = latino.loc[idx]
 
-    # 10% con el par id_usuario + id_reto repetido (inscripción doble)
+    # 10% con el par `id_usuario` + `id_reto` REPETIDO: el mismo usuario inscrito dos veces en el mismo reto (eso el back lo prohibe con 409).
     idx = generar_muestra(datos_df, 0.10)
     repetidas = datos_df.loc[idx].copy()
-    # aquí, si tienes una columna id propia (ej. id_inscripcion), dale un valor nuevo
     datos_df = pd.concat([datos_df, repetidas], ignore_index=True)
 
-    # 5% de duplicados exactos (hazlo AL FINAL para que la copia sea idéntica)
+    #5% de las filas repetidas tal cual (duplicados exactos).
     idx = generar_muestra(datos_df, 0.05)
     datos_df = pd.concat([datos_df, datos_df.loc[idx]], ignore_index=True)
 
